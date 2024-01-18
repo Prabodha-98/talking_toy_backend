@@ -69,3 +69,37 @@ exports.login = async(req, res, next) => {
         // next(error);
     }
 }
+exports.request_reset =  async (req, res) => {
+    try {
+      const { email } = req.body;
+      await UserService.requestPasswordReset(email);
+      res.status(200).json({ message: 'Password reset email sent.' });
+    } catch (error) {
+        console.log(error)
+      res.status(500).json({ message: error.message });
+    }
+  }
+exports.check_code =  async (req, res) => {
+    try {
+      const { code } = req.body;
+     const isExist= await UserService.checkCodeExists(code)
+      
+       res.status(200).json({ isExist});
+
+    } catch (error) {
+        console.log(error)
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  exports.reset =   async (req, res) => {
+    try {
+      const { token, newPassword } = req.body;
+      console.log(token,newPassword)
+      await UserService.resetPassword(token, newPassword);
+      res.status(200).json({ message: 'Password reset successful.' });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: error.message });
+    }
+  }
